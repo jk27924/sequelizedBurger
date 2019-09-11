@@ -1,8 +1,16 @@
 var express = require("express");
 
+// listen on port 3000
+var PORT = process.env.PORT || 3000;
+
+// Requiring our models for syncing
+var db = require("./models");
+
 var app = express();
 // Serve static content for the app from the "public" directory in the application directory.
 app.use(express.static("public"));
+
+
 
 // Parse request body as JSON
 app.use(express.urlencoded({ extended: true }));
@@ -21,6 +29,11 @@ app.use(routes);
 
 // listen on port 3000
 var PORT = process.env.PORT || 3000;
-app.listen(PORT, function() {
-  console.log("App listening on PORT " + PORT);
+
+// Sync DB with my APP
+db.sequelize.sync({ force: true }).then(function() {
+  app.listen(PORT, function() {
+    console.log("App listening on PORT " + PORT);
+  });
 });
+
